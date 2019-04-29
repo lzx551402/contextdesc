@@ -22,15 +22,15 @@ from utils.opencvhelper import SiftWrapper, MatcherWrapper
 
 FLAGS = tf.app.flags.FLAGS
 
-tf.app.flags.DEFINE_string('model_prefix', '../model/contextdesc-e2e',
+tf.app.flags.DEFINE_string('model_prefix', '../models/contextdesc-e2e',
                            """Path to the local and augmentation model.""")
-tf.app.flags.DEFINE_string('regional_model', '../model/retrieval_resnet50.pb',
+tf.app.flags.DEFINE_string('regional_model', '../models/retrieval_resnet50.pb',
                            """Path to the regional model.""")
 tf.app.flags.DEFINE_integer('max_kpt_num', 2048,
                             """Maximum number of keypoints. Sampled by octave.""")
-tf.app.flags.DEFINE_string('img1_path', '../img/test_img1.png',
+tf.app.flags.DEFINE_string('img1_path', '../imgs/test_img1.png',
                            """Path to the first image.""")
-tf.app.flags.DEFINE_string('img2_path', '../img/test_img2.png',
+tf.app.flags.DEFINE_string('img2_path', '../imgs/test_img2.png',
                            """Path to the second image.""")
 tf.app.flags.DEFINE_boolean('ratio_test', False,
                             """Whether to apply ratio test in matching.""")
