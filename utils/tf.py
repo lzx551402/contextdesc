@@ -1,10 +1,8 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Copyright 2018, Zixin Luo, HKUST.
 TensorFlow utilities.
 """
-
-from __future__ import print_function
 
 import os
 
@@ -38,3 +36,17 @@ def load_frozen_model(pb_path, prefix='', print_nodes=False):
     else:
         print('Model file does not exist', pb_path)
         exit(-1)
+
+
+def recoverer(sess, model_path):
+    """
+    Recovery parameters from a pretrained model.
+    Args:
+        sess: The tensorflow session instance.
+        model_path: Checkpoint file path.
+    Returns:
+        Nothing
+    """
+    restore_var = tf.global_variables()
+    restorer = tf.train.Saver(restore_var)
+    restorer.restore(sess, model_path)

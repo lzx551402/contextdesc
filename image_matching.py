@@ -27,6 +27,8 @@ tf.app.flags.DEFINE_string('img2_path', 'imgs/test_img2.jpg',
 tf.app.flags.DEFINE_integer('n_sample', 2048,
                             """Maximum number of keypoints. Sampled by octave.""")
 # model options
+tf.app.flags.DEFINE_string('model_type', 'pb',
+                           """Pre-trained model type.""")
 tf.app.flags.DEFINE_boolean('dense_desc', False,
                             """Whether to use dense descriptor model.""")
 # matching options
@@ -94,9 +96,16 @@ def extract_augmented_features(reg_feat_list, loc_info_list, model_path):
 
 def main(argv=None):  # pylint: disable=unused-argument
     """Program entrance."""
-    reg_model_path = os.path.join(FLAGS.reg_model, 'reg.pb')
-    loc_model_path = os.path.join(FLAGS.loc_model, 'loc.pb')
-    aug_model_path = os.path.join(FLAGS.loc_model, 'aug.pb')
+    if FLAGS.model_type == 'pb':
+        reg_model_path = os.path.join(FLAGS.reg_model, 'reg.pb')
+        loc_model_path = os.path.join(FLAGS.loc_model, 'loc.pb')
+        aug_model_path = os.path.join(FLAGS.loc_model, 'aug.pb')
+    elif FLAGS.model_type == 'ckpt':
+        reg_model_path = os.path.join(FLAGS.reg_model, 'model.ckpt-550000')
+        loc_model_path = os.path.join(FLAGS.loc_model, 'model.ckpt-400000')
+        aug_model_path = os.path.join(FLAGS.loc_model, 'model.ckpt-400000')
+    else:
+        raise NotImplementedError
 
     img_paths = [FLAGS.img1_path, FLAGS.img2_path]
     # load testing images.

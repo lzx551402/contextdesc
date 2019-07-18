@@ -3,12 +3,16 @@ from queue import Queue
 from threading import Thread
 
 import numpy as np
+import tensorflow as tf
 
 from .base_model import BaseModel
+from .cnn_wrapper.descnet import GeoDesc, DenseGeoDesc
+from .cnn_wrapper.augdesc import MatchabilityPrediction
 
 sys.path.append('..')
 
 from utils.opencvhelper import SiftWrapper
+from utils.spatial_transformer import transformer_crop
 
 
 class LocModel(BaseModel):
@@ -16,9 +20,6 @@ class LocModel(BaseModel):
     default_config = {'n_feature': 0, "n_sample": 0,
                       'batch_size': 512, 'sift_wrapper': None, 'upright': False,
                       'dense_desc': False, 'sift_desc': False, 'peak_thld': 0.0067, 'max_dim': 1280}
-
-    def _model(self):
-        return
 
     def _init_model(self):
         self.sift_wrapper = SiftWrapper(
@@ -116,3 +117,41 @@ class LocModel(BaseModel):
             kpt_mb = local_returns[1]
 
         return loc_feat, kpt_mb, kpt_xy, cv_kpts, sift_desc
+
+    def _construct_network(self):
+        """Model for patch description."""
+
+        if self.config['dense_desc']:
+            with tf.name_scope('input'):
+                ph_imgs = tf.placeholder(dtype=tf.float32, shape=(
+                    None, None, None, 1), name='img')
+                ph_kpt_params = tf.placeholder(tf.float32, shape=(None, None, 6), name='kpt_param')
+            kpt_xy = tf.concat((ph_kpt_params[:, :, 2, None], ph_kpt_params[:, :, 5, None]), axis=-1)
+            kpt_theta = tf.reshape(ph_kpt_params, (tf.shape(ph_kpt_params)[0], tf.shape(ph_kpt_params)[1], 2, 3))
+            mean, variance = tf.nn.moments(
+                tf.cast(ph_imgs, tf.float32), axes=[1, 2], keep_dims=True)
+            norm_input = tf.nn.batch_normalization(ph_imgs, mean, variance, None, None, 1e-5)
+            config_dict = {}
+            config_dict['pert_theta'] = kpt_theta
+            config_dict['patch_sampler'] = transformer_crop
+            tower = DenseGeoDesc({'data': norm_input, 'kpt_coord': kpt_xy},
+                          is_training=False, resue=False, **config_dict)
+        else:
+            input_size = (32, 32)
+            patches = tf.placeholder(
+                dtype=tf.float32, shape=(None, input_size[0], input_size[1], 1), name='input')
+            # patch standardization
+            mean, variance = tf.nn.moments(
+                tf.cast(patches, tf.float32), axes=[1, 2], keep_dims=True)
+            patches = tf.nn.batch_normalization(patches, mean, variance, None, None, 1e-5)
+            tower = GeoDesc({'data': patches}, is_training=False, reuse=False)
+
+        conv6_feat = tower.get_output_by_name('conv6')
+        conv6_feat = tf.squeeze(conv6_feat, axis=[1, 2], name='conv6_feat')
+
+        with tf.variable_scope('kpt_m'):
+            inter_feat = tower.get_output_by_name('conv5')
+            matchability_tower = MatchabilityPrediction(
+                {'data': inter_feat}, is_training=False, reuse=False)
+            mb = matchability_tower.get_output()
+        mb = tf.squeeze(mb, axis=[1, 2], name='kpt_mb')

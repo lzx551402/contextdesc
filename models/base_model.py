@@ -5,15 +5,15 @@ Copyright 2019, Zixin Luo, HKUST.
 Inference script.
 """
 
-
 import sys
+import os
 from abc import ABCMeta, abstractmethod
 import collections
 import tensorflow as tf
 
 sys.path.append('..')
 
-from utils.tf import load_frozen_model
+from utils.tf import load_frozen_model, recoverer
 
 
 def dict_update(d, u):
@@ -38,16 +38,15 @@ class BaseModel(metaclass=ABCMeta):
     """Base model class."""
 
     @abstractmethod
-    def _model(self):
-        """Implements the graph of the model."""
-        raise NotImplementedError
-
-    @abstractmethod
     def _run(self, data):
         raise NotImplementedError
 
     @abstractmethod
     def _init_model(self):
+        raise NotImplementedError
+
+    @abstractmethod
+    def _construct_network(self):
         raise NotImplementedError
 
     def run_test_data(self, data):
@@ -60,10 +59,18 @@ class BaseModel(metaclass=ABCMeta):
         # Update config
         self.config = dict_update(getattr(self, 'default_config', {}), config)
         self._init_model()
-        graph = load_frozen_model(self.model_path, print_nodes=False)
+        ext = os.path.splitext(model_path)[1]
+
         sess_config = tf.ConfigProto()
         sess_config.gpu_options.allow_growth = True
-        self.sess = tf.Session(graph=graph, config=sess_config)
+
+        if ext.find('.pb') == 0:
+            graph = load_frozen_model(self.model_path, print_nodes=False)
+            self.sess = tf.Session(graph=graph, config=sess_config)
+        elif ext.find('.ckpt') == 0:
+            self._construct_network()
+            self.sess = tf.Session(config=sess_config)
+            recoverer(self.sess, model_path)
 
     def close(self):
         self.sess.close()

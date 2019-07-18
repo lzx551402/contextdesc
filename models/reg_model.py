@@ -1,15 +1,14 @@
 import numpy as np
 import cv2
+import tensorflow as tf
 
 from .base_model import BaseModel
+from .cnn_wrapper.resnet import ResNet50
 
 
 class RegModel(BaseModel):
     output_tensors = "res5c:0"
     default_config = {'max_dim': 1024}
-
-    def _model(self):
-        return
 
     def _init_model(self):
         return
@@ -24,3 +23,9 @@ class RegModel(BaseModel):
         feed_dict = {"input:0": np.expand_dims(data, 0)}
         returns = self.sess.run(self.output_tensors, feed_dict=feed_dict)
         return np.squeeze(returns, axis=0)
+
+    def _construct_network(self):
+        mean = [124., 117., 104.]
+        ph_img = tf.placeholder(dtype=tf.float32, shape=(None, None, None, 3), name='input')
+        ph_img = tf.subtract(ph_img, mean)
+        net = ResNet50({'data': ph_img}, is_training=False, reuse=False, fcn=True)
