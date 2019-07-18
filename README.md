@@ -34,13 +34,13 @@ Several variants of ContextDesc as in the paper are provided for study.
 
 | Name            | Downloads                                                                         | Descriptions                                                                                                                                                                                                                                                               |
 |-----------------|-----------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| retrieval model | [Link](https://research.altizure.com/data/contextdesc_models/retrieval_model.tar) | (Regional feature) An image retrieval model trained on [Google-Landmarks Dataset](https://www.kaggle.com/google/google-landmarks-dataset) that provides high-level image representation to enrich visual context. More details can be found in the supplementary material. |
+| Retrieval model | [Link](https://research.altizure.com/data/contextdesc_models/retrieval_model.tar) | (Regional feature) An image retrieval model trained on [Google-Landmarks Dataset](https://www.kaggle.com/google/google-landmarks-dataset) that provides high-level image representation to enrich visual context. More details can be found in the supplementary material. |
 | ContextDesc| [Link](https://research.altizure.com/data/contextdesc_models/contextdesc.tar)     | (Base) Use [GeoDesc](https://github.com/lzx551402/geodesc) [[1]](#refs) (ECCV'18) as the local feature model, and train only the augmentation model.                                                                                                                       |
 | ContextDesc+    | [Link](https://research.altizure.com/data/contextdesc_models/contextdesc_p.tar)    | (Better) Train the local feature model and augmentation model separately with the proposed scale-aware N-pair loss.                                                                                                                                                        |
 | ContextDesc++   | [Link](https://research.altizure.com/data/contextdesc_models/contextdesc_pp.tar)   | (Best) End-to-end train both the local feature and augmentation models.                                                                                                                                                                                                    |
 | Dense-ContextDesc| [Link](https://research.altizure.com/data/contextdesc_models/dense-contextdesc.tar)   | Densely extract features from the entire input image (instead of image patch). Details can be found [here](docs/dense_model.md).|
 
-TODO: provide TensorFlow network definition.
+The TensorFlow network definition can be found [here](models/cnn_wrapper). An usage is provided along with the [image matching example](image_matching.py).
 
 # Training data
 
@@ -64,7 +64,11 @@ then simply call:
 cd /local/contextdesc && python image_matching.py
 ```
 
-The matching results from SIFT features (top), raw local features (middle) and augmented features (bottom) will be displayed. To test the performance of a dense model, add call the script with `--dense_desc`. Type `python image_matching.py --h` to view more options and test on your own images.
+The matching results from SIFT features (top), raw local features (middle) and augmented features (bottom) will be displayed. 
+
+- To test the performance of a dense model, call the script with `--dense_desc`. 
+- To use the TensorFlow checkpoint file for parameter restoring, call the script with `--type ckpt`.
+- Type `python image_matching.py --h` to view more options and test on your own images.
 
 ### 2. (TODO) Evaluation on HPatches Sequences 
 
@@ -112,6 +116,9 @@ Finally, refer to the [evaluation script](https://github.com/tsattler/visualloca
 [3] HPatches: A benchmark and evaluation of handcrafted and learned local descriptors, Vassileios Balntas*, Karel Lenc*, Andrea Vedaldi and Krystian Mikolajczyk, CVPR 2017.
 
 ## Changelog
+
+### 2019-7-18
+- Add TensorFlow network definition.
 
 ### 2019-7-17
 - A major code refactorying.
