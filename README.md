@@ -76,7 +76,7 @@ Download [HPSequences](http://icvl.ee.ic.ac.uk/vbalnt/hpatches/hpatches-sequence
 
 ### 3. Benchmark on image matching
 
-ContextDesc, together with a learned matcher (comming soon), won both the stereo and muti-view image matching tracks at [IMW2019](https://image-matching-workshop.github.io/). We provide the script that prepares the ContextDesc features and formats the submission files to this challenge.
+ContextDesc, together with a learned matcher [[4]](#refs), won both the stereo and muti-view image matching tracks at [IMW2019](https://image-matching-workshop.github.io/). We provide the script that prepares the ContextDesc features and formats the submission files to this challenge.
 
 To get started, follow the [challenge instructions](https://github.com/vcg-uvic/sfm_benchmark_release) to download the [test data](http://webhome.cs.uvic.ca/~kyi/files/2019/image-matching/imw2019-test.tar.gz).
 
@@ -114,6 +114,8 @@ Finally, refer to the [evaluation script](https://github.com/tsattler/visualloca
 [2] Matchable Image Retrieval by Learning from Surface Reconstruction, Tianwei Shen*, Zixin Luo*, Lei Zhou, Runze Zhang, Siyu Zhu, Tian Fang, Long Quan, ACCV 2018.
 
 [3] HPatches: A benchmark and evaluation of handcrafted and learned local descriptors, Vassileios Balntas*, Karel Lenc*, Andrea Vedaldi and Krystian Mikolajczyk, CVPR 2017.
+
+[4] Learning Two-View Correspondences and Geometry Using Order-Aware Network, Jiahui Zhang, Dawei Sun, Zixin Luo, Anbang Yao, Lei Zhou, Tianwei Shen, Yurong Chen, Hongen Liao, Long Quan, ICCV 2019.
 
 ## Changelog
 
