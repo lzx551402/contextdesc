@@ -300,7 +300,7 @@ class MatcherWrapper(object):
     def __init__(self):
         self.matcher = cv2.BFMatcher(cv2.NORM_L2)
 
-    def get_matches(self, feat1, feat2, cv_kpts1, cv_kpts2, ratio=None, cross_check=True, err_thld=4, info=''):
+    def get_matches(self, feat1, feat2, cv_kpts1, cv_kpts2, ratio=None, cross_check=True, err_thld=4, ransac=True, info=''):
         """Compute putative and inlier matches.
         Args:
             feat: (n_kpts, 128) Local features.
@@ -340,10 +340,14 @@ class MatcherWrapper(object):
             raise Exception("Keypoint type error!")
             exit(-1)
 
-        _, mask = cv2.findFundamentalMat(
-            good_kpts1, good_kpts2, cv2.RANSAC, err_thld, confidence=0.999)
-        n_inlier = np.count_nonzero(mask)
-        print(info, 'n_putative', len(good_matches), 'n_inlier', n_inlier)
+        if ransac:
+            _, mask = cv2.findFundamentalMat(
+                good_kpts1, good_kpts2, cv2.RANSAC, err_thld, confidence=0.999)
+            n_inlier = np.count_nonzero(mask)
+            print(info, 'n_putative', len(good_matches), 'n_inlier', n_inlier)
+        else:
+            mask = np.ones((len(good_matches), ))
+            print(info, 'n_putative', len(good_matches))
         return good_matches, mask
 
     def draw_matches(self, img1, cv_kpts1, img2, cv_kpts2, good_matches, mask,

@@ -122,17 +122,17 @@ def main(argv=None):  # pylint: disable=unused-argument
     sift_match, sift_mask = matcher.get_matches(
         sift_feat_list[0], sift_feat_list[1], cv_kpts_list[0], cv_kpts_list[1],
         ratio=0.8 if FLAGS.ratio_test else None, cross_check=FLAGS.cross_check,
-        err_thld=3, info='SIFT feautre')
+        err_thld=3, ransac=True, info='SIFT feautre')
 
     base_match, base_mask = matcher.get_matches(
         loc_feat_list[0], loc_feat_list[1], cv_kpts_list[0], cv_kpts_list[1],
         ratio=0.89 if FLAGS.ratio_test else None, cross_check=FLAGS.cross_check,
-        err_thld=3, info='Raw local feature')
+        err_thld=3, ransac=True, info='Raw local feature')
 
     aug_match, aug_mask = matcher.get_matches(
         aug_feat_list[0], aug_feat_list[1], cv_kpts_list[0], cv_kpts_list[1],
         ratio=0.89 if FLAGS.ratio_test else None, cross_check=FLAGS.cross_check,
-        err_thld=3, info='Augmented local feature')
+        err_thld=3, ransac=True, info='Augmented local feature')
 
     sift_disp = matcher.draw_matches(
         rgb_list[0], cv_kpts_list[0], rgb_list[1], cv_kpts_list[1], sift_match, sift_mask)
