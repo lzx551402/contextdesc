@@ -21,8 +21,9 @@ class Yfcc(BaseDataset):
             dump_folder = os.path.join(config['dump_root'], tmp_seq)
             if not os.path.exists(dump_folder):
                 os.makedirs(dump_folder)
-            seq_path = os.path.join(base_path, tmp_seq, config['data_split'], 'images')
-            image_paths.extend(glob.glob(os.path.join(seq_path, '*.jpg')))
+            for data_split in config['data_split']:
+                seq_path = os.path.join(base_path, tmp_seq, data_split, 'images')
+                image_paths.extend(glob.glob(os.path.join(seq_path, '*.jpg')))
         if config['truncate'] is not None:
             print(Notify.WARNING, "Truncate from",
                   config['truncate'][0], "to", config['truncate'][1], Notify.ENDC)

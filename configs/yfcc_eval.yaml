@@ -1,5 +1,5 @@
 data_name: 'yfcc'
-data_split: 'train'
+data_split: ['train', 'test']
 data_root: '/local/yfcc'
 dump_root: '/local/dump_yfcc'
 truncate: [0, null]
