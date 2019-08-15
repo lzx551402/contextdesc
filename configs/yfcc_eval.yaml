@@ -1,0 +1,33 @@
+data_name: 'yfcc'
+data_split: 'train'
+data_root: '/local/yfcc'
+dump_root: '/local/dump_yfcc'
+truncate: [0, null]
+
+pretrained:
+  loc_model: 'pretrained/contextdesc++'
+  reg_model: 'pretrained/retrieval_model'
+
+reg_feat:
+  infer: true
+  overwrite: false
+  max_dim: 1024
+
+loc_feat:
+  infer: true 
+  overwrite: false
+  n_feature: 8000
+  batch_size: 512
+  dense_desc: false 
+  peak_thld: 0.04
+  max_dim: 1280
+  upright: true
+
+aug_feat:
+  infer: true 
+  overwrite: false
+  quantz: false
+
+post_format:
+  enable: true
+  suffix: '.numkp8000.contextdesc.desc.h5'
