@@ -40,7 +40,7 @@ def extract_reg_feat(config):
             if 'reg_feat' not in reg_f or config['reg_feat']['overwrite']:
                 reg_feat = model.run_test_data(data['image'])
                 if 'reg_feat' in reg_f:
-                    del reg_f['loc_info']
+                    del reg_f['reg_feat']
                 _ = reg_f.create_dataset('reg_feat', data=reg_feat)
             prog_bar.update(idx)
             idx += 1

@@ -106,6 +106,9 @@ The extracted features will be saved alongside their corresponding images, e.g.,
 
 Finally, refer to the [evaluation script](https://github.com/tsattler/visuallocalizationbenchmark) to generate and submit the results to the challenge website.
 
+## Notes
+Refer to [example configuration file](configs/example.yaml) on how to evaluate with different settings.
+
 ## References
 <a name="refs"></a>
 
@@ -115,7 +118,7 @@ Finally, refer to the [evaluation script](https://github.com/tsattler/visualloca
 
 [3] HPatches: A benchmark and evaluation of handcrafted and learned local descriptors, Vassileios Balntas*, Karel Lenc*, Andrea Vedaldi and Krystian Mikolajczyk, CVPR 2017.
 
-[4] Learning Two-View Correspondences and Geometry Using Order-Aware Network, Jiahui Zhang, Dawei Sun, Zixin Luo, Anbang Yao, Lei Zhou, Tianwei Shen, Yurong Chen, Hongen Liao, Long Quan, ICCV 2019.
+[4] Learning Two-View Correspondences and Geometry Using Order-Aware Network, Jiahui Zhang*, Dawei Sun*, Zixin Luo, Anbang Yao, Lei Zhou, Tianwei Shen, Yurong Chen, Long Quan, Hongen Liao, ICCV 2019.
 
 ## Changelog
 
