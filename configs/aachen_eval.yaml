@@ -31,4 +31,4 @@ aug_feat:
 
 post_format:
   enable: true
-  suffix: '.contextdesc10k_upright_debug'
+  suffix: '.contextdesc10k_upright'
