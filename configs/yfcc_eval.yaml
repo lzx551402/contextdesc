@@ -18,10 +18,11 @@ loc_feat:
   overwrite: false
   n_feature: 8000
   batch_size: 512
-  dense_desc: false 
-  peak_thld: 0.04
+  dense_desc: false
+  peak_thld: 0.0067
   max_dim: 1280
   upright: true
+  scale_diff: false
 
 aug_feat:
   infer: true 

@@ -36,7 +36,7 @@ loc_feat:
   # Batch size of local features.
   batch_size: 512
   # Whether to extract dense local feature. Enable it for dense-contextdesc.
-  dense_desc: false 
+  dense_desc: false
   # Detection threshold for SIFT.
   peak_thld: 0.04
   # The max dimension of input images (images exceeded it will be down-sized).
@@ -44,6 +44,9 @@ loc_feat:
   # Whether to ignore the orientation estimation of SIFT. Enable it when images are not imposed
   # large rotation change.
   upright: true
+  # Whether to extract image patches from image pyramid so as to improve the scale invariance.
+  # Enable it when images are imposed large scale change.
+  scale_diff: false
 
 # Configuration of augmented feature extraction.
 aug_feat:

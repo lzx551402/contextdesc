@@ -18,7 +18,7 @@ from utils.spatial_transformer import transformer_crop
 class LocModel(BaseModel):
     output_tensors = ["conv6_feat:0", "kpt_mb:0"]
     default_config = {'n_feature': 0, "n_sample": 0,
-                      'batch_size': 512, 'sift_wrapper': None, 'upright': False,
+                      'batch_size': 512, 'sift_wrapper': None, 'upright': False, 'scale_diff': False,
                       'dense_desc': False, 'sift_desc': False, 'peak_thld': 0.0067, 'max_dim': 1280}
 
     def _init_model(self):
@@ -28,6 +28,7 @@ class LocModel(BaseModel):
             peak_thld=self.config['peak_thld'])
         self.sift_wrapper.standardize = False  # the network has handled this step.
         self.sift_wrapper.ori_off = self.config['upright']
+        self.sift_wrapper.pyr_off = not self.config['scale_diff']
         self.sift_wrapper.create()
 
     def _run(self, data):
