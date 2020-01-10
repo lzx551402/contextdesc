@@ -22,7 +22,7 @@ def load_frozen_model(pb_path, prefix='', print_nodes=False):
     """
     if os.path.exists(pb_path):
         with tf.io.gfile.GFile(pb_path, "rb") as f:
-            graph_def = tf.GraphDef()
+            graph_def = tf.compat.v1.GraphDef()
             graph_def.ParseFromString(f.read())
         with tf.Graph().as_default() as graph:
             tf.import_graph_def(
@@ -47,6 +47,6 @@ def recoverer(sess, model_path):
     Returns:
         Nothing
     """
-    restore_var = tf.global_variables()
-    restorer = tf.train.Saver(restore_var)
+    restore_var = tf.compat.v1.global_variables()
+    restorer = tf.compat.v1.train.Saver(restore_var)
     restorer.restore(sess, model_path)

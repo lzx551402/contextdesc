@@ -222,7 +222,7 @@ class Network(object):
 
         if len(input_tensor.get_shape()) == 4:
             if not separable:
-                return tf.layers.conv2d(padded_input, **kwargs)
+                return tf.compat.v1.layers.conv2d(padded_input, **kwargs)
             else:
                 return tf.layers.separable_conv2d(padded_input, **kwargs)
         elif len(input_tensor.get_shape()) == 5:

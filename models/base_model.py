@@ -61,17 +61,17 @@ class BaseModel(metaclass=ABCMeta):
         self._init_model()
         ext = os.path.splitext(model_path)[1]
 
-        sess_config = tf.ConfigProto()
+        sess_config = tf.compat.v1.ConfigProto()
         sess_config.gpu_options.allow_growth = True
 
         if ext.find('.pb') == 0:
             graph = load_frozen_model(self.model_path, print_nodes=False)
-            self.sess = tf.Session(graph=graph, config=sess_config)
+            self.sess = tf.compat.v1.Session(graph=graph, config=sess_config)
         elif ext.find('.ckpt') == 0:
             self._construct_network()
-            self.sess = tf.Session(config=sess_config)
+            self.sess = tf.compat.v1.Session(config=sess_config)
             recoverer(self.sess, model_path)
 
     def close(self):
         self.sess.close()
-        tf.reset_default_graph()
+        tf.compat.v1.reset_default_graph()

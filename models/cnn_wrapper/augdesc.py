@@ -12,13 +12,13 @@ class VisualContext(Network):
 
         eps = 1e-6
         dist_mat = tf.matmul(xy1, xy2, transpose_b=True)
-        norm1 = tf.reduce_sum(xy1 * xy1, axis=-1, keep_dims=True)
-        norm2 = tf.reduce_sum(xy2 * xy2, axis=-1, keep_dims=True)
-        dist_mat = tf.sqrt(norm1 - 2 * dist_mat + tf.matrix_transpose(norm2) + eps)
+        norm1 = tf.reduce_sum(xy1 * xy1, axis=-1, keepdims=True)
+        norm2 = tf.reduce_sum(xy2 * xy2, axis=-1, keepdims=True)
+        dist_mat = tf.sqrt(norm1 - 2 * dist_mat + tf.linalg.matrix_transpose(norm2) + eps)
         dist, idx = tf.math.top_k(tf.negative(dist_mat), k=3)
 
         dist = tf.maximum(dist, 1e-10)
-        norm = tf.reduce_sum((1.0 / dist), axis=2, keep_dims=True)
+        norm = tf.reduce_sum((1.0 / dist), axis=2, keepdims=True)
         norm = tf.tile(norm, [1, 1, 3])
         weight = (1.0 / dist) / norm
         idx = tf.reshape(idx, (batch_size, -1))
@@ -48,7 +48,6 @@ class VisualContext(Network):
 
         batch_size = tf.shape(vis_context_feat)[0]
         img_feat_dim = vis_context_feat.get_shape()[-1].value
-        kpt_num = tf.shape(local_feat)[1]
         out_vis_context = None
 
         (self.feed('img_feat')
