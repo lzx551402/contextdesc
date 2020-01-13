@@ -70,9 +70,23 @@ The matching results from SIFT features (top), raw local features (middle) and a
 - To use the TensorFlow checkpoint file for parameter restoring, call the script with `--type ckpt`.
 - Type `python image_matching.py --h` to view more options and test on your own images.
 
-### 2. (TODO) Evaluation on HPatches Sequences 
+### 2. Evaluation on HPatches Sequences 
 
-Download [HPSequences](http://icvl.ee.ic.ac.uk/vbalnt/hpatches/hpatches-sequences-release.tar.gz) (full image sequences of [HPatches](https://github.com/hpatches/hpatches-dataset) [[3]](#refs) and their corresponding homographies).
+First, download [HPSequences](http://icvl.ee.ic.ac.uk/vbalnt/hpatches/hpatches-sequences-release.tar.gz) (full image sequences of [HPatches](https://github.com/hpatches/hpatches-dataset) [[3]](#refs) and their corresponding homographies).
+
+Second, download our CVPR intermediate results of keypoint locations and image patches for HPSequences ([Link](https://drive.google.com/file/d/1BeZUYDvPqluud04B2h3HayLZGywoey8n/view?usp=sharing)).
+
+Unzip the above two downloads in the same folder, and you will find each .ppm image aside with a .pkl file.
+
+Finally, to reproduce our CVPR results, configure the data root in `configs/hseq_eval.yaml`, and call call the evaluation script by:
+
+```bash
+cd /local/contextdesc && python hseq_eval.py --function hseq_eval --config configs/hseq_eval.yaml
+```
+
+You will see Recall of 67.38/77.27 for i/v sequences, similar to the results reported in the original paper (67.14/76.42).
+
+The updated results can be obtained by setting `suffix` to null in `configs/hseq_eval.yaml`. Due to some tweakings on the keypoint detector and patch extractor, it yields better results, i.e., 70.03/78.82 for i/v sequences.
 
 ### 3. Benchmark on image matching
 
@@ -121,6 +135,9 @@ Refer to [example configuration file](configs/example.yaml) on how to evaluate w
 [4] Learning Two-View Correspondences and Geometry Using Order-Aware Network, Jiahui Zhang*, Dawei Sun*, Zixin Luo, Anbang Yao, Lei Zhou, Tianwei Shen, Yurong Chen, Long Quan, Hongen Liao, ICCV 2019.
 
 ## Changelog
+
+### 2020-1-13
+- Add HPatches Sequences evaluation.
 
 ### 2019-7-18
 - Add TensorFlow network definition.

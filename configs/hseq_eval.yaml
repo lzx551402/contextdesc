@@ -1,0 +1,13 @@
+hseq:
+  root: "/local/hpatches-sequences-release"
+  seq: ["v", "i"]
+  kpt_n: 2048
+  start_idx: 0
+  suffix: '_cvpr'
+eval:
+  model_path: "pretrained/contextdesc++/model.ckpt-400000"
+  err_thld: 2.5
+network:
+  dense_desc: false
+  ori_est: false
+  aug: true
