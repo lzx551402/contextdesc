@@ -80,7 +80,10 @@ class HSeqUtils(object):
                 with open(os.path.join(seq_name, ('%d' + self.suffix + '.pkl') % img_idx), 'rb') as handle:
                     data_dict = pickle.load(handle, encoding='latin1')
                 npy_kpts = data_dict['npy_kpts']
-                patches = data_dict['patches']
+                if not dense_desc:
+                    patches = data_dict['patches']
+                else:
+                    patches = None
 
             kpt_num = npy_kpts.shape[0]
 
@@ -91,7 +94,8 @@ class HSeqUtils(object):
                 sample_idx = range(kpt_num)
             # Apply sampling.
             npy_kpts = npy_kpts[sample_idx]
-            patches = patches[sample_idx]
+            if patches is not None:
+                patches = patches[sample_idx]
             kpt_num = npy_kpts.shape[0]
 
             # compose affine crop matrix.

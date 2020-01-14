@@ -84,9 +84,11 @@ Finally, to reproduce our CVPR results, configure the data root in `configs/hseq
 cd /local/contextdesc && python hseq_eval.py --function hseq_eval --config configs/hseq_eval.yaml
 ```
 
-You will see Recall of 67.35/77.33 for i/v sequences, similar to the results reported in the original paper (67.53/77.20).
+For ContextDesc++, you will see Recall of 67.35/77.33 for i/v sequences, similar to the results reported in the original paper (67.53/77.20).
 
-The updated results can be obtained by setting `suffix` to null in `configs/hseq_eval.yaml`. Due to some tweakings on the keypoint detector and patch extractor, it yields better results, i.e., 70.03/78.82 for i/v sequences.
+The updated results can be obtained by setting `suffix` to null in `configs/hseq_eval.yaml`. Due to some tweakings on the keypoint detector and patch extractor, it yields better results, i.e., 70.10/78.83 for i/v sequences.
+
+To test Dense-ContextDesc, set `suffix` to null and `dense_desc` to true in `configs/hseq_eval.yaml`, and it will give 76.95/75.58 for i/v sequences. It shows that a dense prediction (with a global input normalization) is benefical for illumination change. However, since scale/rotation changes are handled in the intermediate feature maps, the perspective invariance is weakened.
 
 ### 3. Benchmark on image matching
 
