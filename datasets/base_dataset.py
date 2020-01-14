@@ -59,11 +59,11 @@ class BaseDataset(metaclass=ABCMeta):
 
         with tf.device('/cpu:0'):
             self.tf_splits = self._get_data(self.dataset)
-            self.tf_next = self.tf_splits.make_one_shot_iterator().get_next()
+            self.tf_next = tf.compat.v1.data.make_one_shot_iterator(self.tf_splits).get_next()
         self.end_set = tf.errors.OutOfRangeError
-        config = tf.ConfigProto()
+        config = tf.compat.v1.ConfigProto()
         config.gpu_options.allow_growth = True
-        self.sess = tf.Session(config=config)
+        self.sess = tf.compat.v1.Session(config=config)
 
     def _get_set_generator(self):
         while True:
@@ -72,17 +72,17 @@ class BaseDataset(metaclass=ABCMeta):
     def _get_data(self, files):
         def _read_image(img_path):
             channels = 1 if self.read_gray else 3
-            img = tf.image.decode_image(tf.read_file(img_path), channels=channels)
+            img = tf.image.decode_image(tf.io.read_file(img_path), channels=channels)
             img.set_shape((None, None, channels))
-            return tf.to_float(img)
+            return tf.cast(img, tf.float32)
 
         def _read_dump(path):
             f = h5py.File(path, 'r')
-            return (f['reg_feat'].value.astype(np.float32), f['loc_info'].value.astype(np.float32))
+            return (f['reg_feat'][()].astype(np.float32), f['loc_info'][()].astype(np.float32))
 
         def _read_gen_train(path):
             f = h5py.File(path, 'r')
-            return (f['aug_feat'].value.astype(np.float32), f['loc_info'].value[:, 0:2].astype(np.float32))
+            return (f['aug_feat'][()].astype(np.float32), f['loc_info'][()][:, 0:2].astype(np.float32))
 
         image_paths = tf.data.Dataset.from_tensor_slices(files['image_paths'])
         dump_paths = tf.data.Dataset.from_tensor_slices(files['dump_paths'])
@@ -92,11 +92,11 @@ class BaseDataset(metaclass=ABCMeta):
             data = tf.data.Dataset.zip(
                 {'image': images, 'dump_path': dump_paths, 'image_path': image_paths})
         elif self.config['stage'] == 'aug':
-            dump_data = dump_paths.map(lambda path: tf.py_func(
+            dump_data = dump_paths.map(lambda path: tf.numpy_function(
                 _read_dump, [path], [tf.float32, tf.float32]))
             data = tf.data.Dataset.zip({'dump_data': dump_data, 'dump_path': dump_paths})
         elif self.config['stage'] == 'post_format':
-            dump_data = dump_paths.map(lambda path: tf.py_func(
+            dump_data = dump_paths.map(lambda path: tf.numpy_function(
                 _read_gen_train, [path], [tf.float32, tf.float32]))
             data = tf.data.Dataset.zip(
                 {'dump_data': dump_data, 'dump_path': dump_paths, 'image_path': image_paths})

@@ -5,7 +5,8 @@ hseq:
   start_idx: 0
   suffix: '_cvpr'
 eval:
-  model_path: "pretrained/contextdesc++/model.ckpt-400000"
+  loc_model: 'pretrained/contextdesc++'
+  reg_model: 'pretrained/retrieval_model'
   err_thld: 2.5
 network:
   dense_desc: false

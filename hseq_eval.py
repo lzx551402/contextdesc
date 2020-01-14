@@ -12,13 +12,14 @@ from threading import Thread
 import yaml
 import cv2
 import numpy as np
+import progressbar
 
 import tensorflow as tf
 
 from utils.hseq_utils import HSeqUtils
 from utils.evaluator import Evaluator
 from utils.tf import recoverer
-
+from models import get_model
 from models.inference_model import inference
 
 FLAGS = tf.app.flags.FLAGS
@@ -100,11 +101,36 @@ def matcher(consumer_queue, sess, evaluator):
         record = []
 
 
+def prepare_reg_feat(hseq_utils, reg_model):
+    in_img_path = []
+    out_img_feat_list = []
+    for seq_name in hseq_utils.seqs:
+        for img_idx in range(1, 7):
+            img_feat_path = os.path.join(seq_name, '%d_img_feat.npy' % img_idx)
+            if not os.path.exists(img_feat_path):
+                in_img_path.append(os.path.join(seq_name, '%d.ppm' % img_idx))
+                out_img_feat_list.append(img_feat_path)
+
+    if len(in_img_path) > 0:
+        model = get_model('reg_model')(reg_model)
+        prog_bar = progressbar.ProgressBar()
+        prog_bar.max_value = len(in_img_path)
+        for idx, val in enumerate(in_img_path):
+            img = cv2.imread(val)
+            img = img[..., ::-1]
+            reg_feat = model.run_test_data(img)
+            np.save(out_img_feat_list[idx], reg_feat)
+            prog_bar.update(idx)
+        model.close()
+
+
 def hseq_eval():
     with open(FLAGS.config, 'r') as f:
         test_config = yaml.load(f, Loader=yaml.FullLoader)
     # Configure dataset
     hseq_utils = HSeqUtils(test_config['hseq'])
+    prepare_reg_feat(hseq_utils, os.path.join(
+        test_config['eval']['reg_model'], 'model.ckpt-550000'))
     # Configure evaluation
     evaluator = Evaluator(test_config['eval'])
     # Construct inference networks.
@@ -115,7 +141,7 @@ def hseq_eval():
 
     with tf.compat.v1.Session(config=config) as sess:
         # Restore pre-trained model.
-        recoverer(sess, test_config['eval']['model_path'])
+        recoverer(sess, os.path.join(test_config['eval']['loc_model'], 'model.ckpt-400000'))
 
         producer_queue = Queue(maxsize=18)
         consumer_queue = Queue()

@@ -84,7 +84,7 @@ Finally, to reproduce our CVPR results, configure the data root in `configs/hseq
 cd /local/contextdesc && python hseq_eval.py --function hseq_eval --config configs/hseq_eval.yaml
 ```
 
-You will see Recall of 67.38/77.27 for i/v sequences, similar to the results reported in the original paper (67.53/77.20).
+You will see Recall of 67.35/77.33 for i/v sequences, similar to the results reported in the original paper (67.53/77.20).
 
 The updated results can be obtained by setting `suffix` to null in `configs/hseq_eval.yaml`. Due to some tweakings on the keypoint detector and patch extractor, it yields better results, i.e., 70.03/78.82 for i/v sequences.
 
