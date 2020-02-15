@@ -23,8 +23,8 @@ class Evaluator(object):
         return proj_coord
 
     def bf_matcher_graph(self):
-        descriptors_a = tf.placeholder(tf.float32, (None, None), 'descriptor_a')
-        descriptors_b = tf.placeholder(tf.float32, (None, None), 'descriptor_b')
+        descriptors_a = tf.compat.v1.placeholder(tf.float32, (None, None), 'descriptor_a')
+        descriptors_b = tf.compat.v1.placeholder(tf.float32, (None, None), 'descriptor_b')
         sim = tf.linalg.matmul(descriptors_a, descriptors_b, transpose_b=True)
         ids1 = tf.range(0, tf.shape(sim)[0])
         nn12 = tf.math.argmax(sim, axis=1, output_type=tf.int32)

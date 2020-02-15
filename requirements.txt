@@ -3,5 +3,5 @@ h5py
 matplotlib
 tensorflow==1.14.0
 tensorflow-estimator==1.14.0
-opencv-python==3.4.2.16
-opencv-contrib-python==3.4.2.16
+opencv-python==3.4.2.17
+opencv-contrib-python==3.4.2.17
