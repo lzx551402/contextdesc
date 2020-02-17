@@ -59,19 +59,24 @@ class BaseModel(metaclass=ABCMeta):
         # Update config
         self.config = dict_update(getattr(self, 'default_config', {}), config)
         self._init_model()
-        ext = os.path.splitext(model_path)[1]
+        if model_path is None:
+            print("No pretrained model specified!")
+            self.sess = None
+        else:
+            ext = os.path.splitext(model_path)[1]
 
-        sess_config = tf.compat.v1.ConfigProto()
-        sess_config.gpu_options.allow_growth = True
+            sess_config = tf.compat.v1.ConfigProto()
+            sess_config.gpu_options.allow_growth = True
 
-        if ext.find('.pb') == 0:
-            graph = load_frozen_model(self.model_path, print_nodes=False)
-            self.sess = tf.compat.v1.Session(graph=graph, config=sess_config)
-        elif ext.find('.ckpt') == 0:
-            self._construct_network()
-            self.sess = tf.compat.v1.Session(config=sess_config)
-            recoverer(self.sess, model_path)
+            if ext.find('.pb') == 0:
+                graph = load_frozen_model(self.model_path, print_nodes=False)
+                self.sess = tf.compat.v1.Session(graph=graph, config=sess_config)
+            elif ext.find('.ckpt') == 0:
+                self._construct_network()
+                self.sess = tf.compat.v1.Session(config=sess_config)
+                recoverer(self.sess, model_path)
 
     def close(self):
-        self.sess.close()
-        tf.compat.v1.reset_default_graph()
+        if self.sess is not None:
+            self.sess.close()
+            tf.compat.v1.reset_default_graph()

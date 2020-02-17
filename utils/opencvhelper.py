@@ -13,10 +13,11 @@ import cv2
 class SiftWrapper(object):
     """"OpenCV SIFT wrapper."""
 
-    def __init__(self, n_feature=0, n_octave_layers=3,
+    def __init__(self, rootsift=True, n_feature=0, n_octave_layers=3,
                  peak_thld=0.0067, edge_thld=10, sigma=1.6,
                  n_sample=8192, patch_size=32):
         self.sift = None
+        self.rootsift = rootsift
 
         self.n_feature = n_feature
         self.n_octave_layers = n_octave_layers
@@ -56,6 +57,8 @@ class SiftWrapper(object):
         """
 
         cv_kpts = self.sift.detect(gray_img, None)
+        if self.n_feature > 0 and len(cv_kpts) > self.n_feature:
+            cv_kpts = cv_kpts[0:self.n_feature]
 
         all_octaves = [np.int8(i.octave & 0xFF) for i in cv_kpts]
         self.first_octave = int(np.min(all_octaves))
@@ -74,6 +77,9 @@ class SiftWrapper(object):
         """
 
         _, sift_desc = self.sift.compute(img, cv_kpts)
+        if self.rootsift:
+            sift_desc /= (sift_desc.sum(axis=1, keepdims=True) + 1e-7)
+            sift_desc = np.sqrt(sift_desc)
         return sift_desc
 
     def build_pyramid(self, gray_img):

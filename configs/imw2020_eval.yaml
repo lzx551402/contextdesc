@@ -1,0 +1,35 @@
+data_name: 'imw2020'
+data_split: 'val'
+data_root: '/home/zxluo/data/phototourism'
+dump_root: '/home/zxluo/imw2020_val_contextdesc_8k_dump'
+submission_root: '/home/zxluo/imw2020_val_contextdesc_8k'
+truncate: [0, null]
+
+pretrained:
+  loc_model: 'pretrained/contextdesc++'
+  reg_model: 'pretrained/retrieval_model'
+
+reg_feat:
+  infer: true
+  overwrite: false
+  max_dim: 1024
+
+loc_feat:
+  infer: true
+  overwrite: false
+  n_feature: 8000
+  batch_size: 512
+  dense_desc: false
+  peak_thld: 0.0067
+  max_dim: 1280
+  upright: true
+  scale_diff: true 
+
+aug_feat:
+  infer: true
+  overwrite: false
+  quantz: false
+
+post_format:
+  enable: true
+  suffix: ''
