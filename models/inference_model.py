@@ -48,7 +48,7 @@ def inference(config):
 
     if config['aug']:
         img_feat = tf.compat.v1.placeholder(
-            tf.float32, shape=(1, None, None, 2048), name='ph_img_feat')
+            tf.float32, shape=(1, None, None, config['reg_feat_dim']), name='ph_img_feat')
         grid_pts = tf.compat.v1.placeholder(
             tf.float32, shape=(1, None, None, 2), name='ph_grid_pts')
 

@@ -6,8 +6,8 @@ submission_root: '/local/submission-contextdesc'
 truncate: [0, null]
 
 pretrained:
-  loc_model: 'pretrained/contextdesc++'
-  reg_model: 'pretrained/retrieval_model'
+  loc_model: 'pretrained/contextdesc++/model.ckpt-400000'
+  reg_model: 'pretrained/retrieval_model/model.ckpt-550000'
 
 reg_feat:
   infer: true
@@ -22,11 +22,12 @@ loc_feat:
   dense_desc: false
   peak_thld: 0.04
   max_dim: 1280
-  upright: false
+  upright: true
   scale_diff: true
 
 aug_feat:
   infer: true
+  reg_feat_dim: 2048
   overwrite: false
   quantz: true
 

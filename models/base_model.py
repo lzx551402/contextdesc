@@ -72,9 +72,13 @@ class BaseModel(metaclass=ABCMeta):
                 graph = load_frozen_model(self.model_path, print_nodes=False)
                 self.sess = tf.compat.v1.Session(graph=graph, config=sess_config)
             elif ext.find('.ckpt') == 0:
-                self._construct_network()
                 self.sess = tf.compat.v1.Session(config=sess_config)
-                recoverer(self.sess, model_path)
+                meta_graph_path = os.path.join(model_path + '.meta')
+                if not os.path.exists(meta_graph_path):
+                    self._construct_network()
+                    recoverer(self.sess, model_path)
+                else:
+                    recoverer(self.sess, model_path, meta_graph_path)
 
     def close(self):
         if self.sess is not None:

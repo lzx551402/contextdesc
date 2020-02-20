@@ -11,7 +11,7 @@ dump_root: '<dump-root-path>'
 # for example, set it to [0, 10] for the first ten images.
 truncate: [0, null]
 
-# Pretrained model path for reg.pb, loc.pb and aug.pb.
+# Pretrained model path for *.pb files, or checkpoint files.
 pretrained:
   loc_model: 'pretrained/<model-name>'
   reg_model: 'pretrained/retrieval_model'
@@ -52,6 +52,8 @@ loc_feat:
 aug_feat:
   # Whether to extract the feature.
   infer: true
+  # the dimensionality of reginal feature.
+  reg_feat_dim: 2048
   # Whether to overwite the feature records in dump files.
   overwrite: false
   # Whether to quantize the saved features to uint8.

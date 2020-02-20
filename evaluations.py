@@ -29,8 +29,7 @@ def extract_reg_feat(config):
     prog_bar.max_value = dataset.data_length
     test_set = dataset.get_test_set()
 
-    reg_model_path = os.path.join(config['pretrained']['reg_model'], 'reg.pb')
-    model = get_model('reg_model')(reg_model_path, **(config['reg_feat']))
+    model = get_model('reg_model')(config['pretrained']['reg_model'], **(config['reg_feat']))
     idx = 0
     while True:
         try:
@@ -57,8 +56,7 @@ def extract_loc_feat(config):
     prog_bar.max_value = dataset.data_length
     test_set = dataset.get_test_set()
 
-    loc_model_path = os.path.join(config['pretrained']['loc_model'], 'loc.pb')
-    model = get_model('loc_model')(loc_model_path, **(config['loc_feat']))
+    model = get_model('loc_model')(config['pretrained']['loc_model'], **(config['loc_feat']))
     idx = 0
     while True:
         try:
@@ -91,8 +89,7 @@ def extract_aug_feat(config):
     prog_bar.max_value = dataset.data_length
     test_set = dataset.get_test_set()
 
-    aug_model_path = os.path.join(config['pretrained']['loc_model'], 'aug.pb')
-    model = get_model('aug_model')(aug_model_path, **(config['aug_feat']))
+    model = get_model('aug_model')(config['pretrained']['loc_model'], **(config['aug_feat']))
     idx = 0
     while True:
         try:

@@ -1,13 +1,13 @@
 data_name: 'imw2020'
 data_split: 'val'
 data_root: '/home/zxluo/data/phototourism'
-dump_root: '/home/zxluo/imw2020_val_contextdesc_8k_dump'
-submission_root: '/home/zxluo/imw2020_val_contextdesc_8k'
+dump_root: '/local/imw2020_val_contextdesc_8k_dump'
+submission_root: '/local/imw2020_val_contextdesc_8k'
 truncate: [0, null]
 
 pretrained:
-  loc_model: 'pretrained/contextdesc++'
-  reg_model: 'pretrained/retrieval_model'
+  loc_model: 'pretrained/contextdesc++/model.ckpt-400000'
+  reg_model: 'pretrained/retrieval_model/model.ckpt-550000'
 
 reg_feat:
   infer: true
@@ -27,6 +27,7 @@ loc_feat:
 
 aug_feat:
   infer: true
+  reg_feat_dim: 2048
   overwrite: false
   quantz: false
 

@@ -38,7 +38,7 @@ def load_frozen_model(pb_path, prefix='', print_nodes=False):
         exit(-1)
 
 
-def recoverer(sess, model_path):
+def recoverer(sess, model_path, meta_graph_path=None):
     """
     Recovery parameters from a pretrained model.
     Args:
@@ -47,6 +47,9 @@ def recoverer(sess, model_path):
     Returns:
         Nothing
     """
-    restore_var = tf.compat.v1.global_variables()
-    restorer = tf.compat.v1.train.Saver(restore_var)
+    if meta_graph_path is None:
+        restore_var = tf.compat.v1.global_variables()
+        restorer = tf.compat.v1.train.Saver(restore_var)
+    else:
+        restorer = tf.train.import_meta_graph(meta_graph_path)
     restorer.restore(sess, model_path)

@@ -42,6 +42,8 @@ class HSeqUtils(object):
         self.seqs = self.seqs[config['start_idx']:]
         self.seq_num = len(self.seqs)
         self.suffix = config['suffix']
+        # for detector config
+        self.upright = config['upright']
         # for data parsing
         self.sample_num = config['kpt_n']
         self.patch_scale = 6
@@ -50,6 +52,7 @@ class HSeqUtils(object):
         random.seed(0)
         if self.suffix is None:
             sift_wrapper = SiftWrapper(n_feature=self.sample_num, peak_thld=0.04)
+            sift_wrapper.ori_off = self.upright
             sift_wrapper.create()
 
         hseq_data = HSeqData()

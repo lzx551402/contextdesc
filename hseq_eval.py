@@ -101,13 +101,13 @@ def matcher(consumer_queue, sess, evaluator):
         record = []
 
 
-def prepare_reg_feat(hseq_utils, reg_model):
+def prepare_reg_feat(hseq_utils, reg_model, overwrite):
     in_img_path = []
     out_img_feat_list = []
     for seq_name in hseq_utils.seqs:
         for img_idx in range(1, 7):
             img_feat_path = os.path.join(seq_name, '%d_img_feat.npy' % img_idx)
-            if not os.path.exists(img_feat_path):
+            if not os.path.exists(img_feat_path) or overwrite:
                 in_img_path.append(os.path.join(seq_name, '%d.ppm' % img_idx))
                 out_img_feat_list.append(img_feat_path)
 
@@ -129,8 +129,7 @@ def hseq_eval():
         test_config = yaml.load(f, Loader=yaml.FullLoader)
     # Configure dataset
     hseq_utils = HSeqUtils(test_config['hseq'])
-    prepare_reg_feat(hseq_utils, os.path.join(
-        test_config['eval']['reg_model'], 'model.ckpt-550000'))
+    prepare_reg_feat(hseq_utils, test_config['eval']['reg_model'], test_config['hseq']['overwrite'])
     # Configure evaluation
     evaluator = Evaluator(test_config['eval'])
     # Construct inference networks.
@@ -141,7 +140,7 @@ def hseq_eval():
 
     with tf.compat.v1.Session(config=config) as sess:
         # Restore pre-trained model.
-        recoverer(sess, os.path.join(test_config['eval']['loc_model'], 'model.ckpt-400000'))
+        recoverer(sess, test_config['eval']['loc_model'])
 
         producer_queue = Queue(maxsize=18)
         consumer_queue = Queue()

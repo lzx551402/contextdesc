@@ -36,7 +36,7 @@ class AugModel(BaseModel):
             ph_local_feat = tf.placeholder(
                 dtype=tf.float32, shape=(None, None, 128), name='local_feat')
             ph_regional_feat = tf.placeholder(dtype=tf.float32, shape=(
-                None, None, None, 2048), name='regional_feat')
+                None, None, None, config['reg_feat_dim']), name='regional_feat')
             ph_kpt_m = tf.placeholder(dtype=tf.float32, shape=(None, None, 1), name='kpt_m')
             ph_kpt_xy = tf.placeholder(dtype=tf.float32, shape=(
                 None, None, 2), name='kpt_xy')
