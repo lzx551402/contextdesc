@@ -82,7 +82,9 @@ class BaseDataset(metaclass=ABCMeta):
 
         def _read_gen_train(path):
             f = h5py.File(path, 'r')
-            return (f['aug_feat'][()].astype(np.float32), f['loc_info'][()][:, 0:2].astype(np.float32))
+            return (f['aug_feat'][()].astype(np.float32), 
+                    f['loc_info'][()][:, 0:2].astype(np.float32),
+                    f['loc_info'][()][:, 4].astype(np.float32))
 
         image_paths = tf.data.Dataset.from_tensor_slices(files['image_paths'])
         dump_paths = tf.data.Dataset.from_tensor_slices(files['dump_paths'])
@@ -97,7 +99,7 @@ class BaseDataset(metaclass=ABCMeta):
             data = tf.data.Dataset.zip({'dump_data': dump_data, 'dump_path': dump_paths})
         elif self.config['stage'] == 'post_format':
             dump_data = dump_paths.map(lambda path: tf.numpy_function(
-                _read_gen_train, [path], [tf.float32, tf.float32]))
+                _read_gen_train, [path], [tf.float32, tf.float32, tf.float32]))
             data = tf.data.Dataset.zip(
                 {'dump_data': dump_data, 'dump_path': dump_paths, 'image_path': image_paths})
         else:

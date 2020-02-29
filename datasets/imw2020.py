@@ -68,18 +68,21 @@ class Imw2020(BaseDataset):
             os.mkdir(seq_folder)
         h5_kpt = os.path.join(seq_folder, 'keypoints.h5')
         h5_desc = os.path.join(seq_folder, 'descriptors.h5')
-        aug_feat = data['dump_data'][0]
-        kpt_xy = data['dump_data'][1]
+        h5_score = os.path.join(seq_folder, 'scores.h5')
 
-        if not os.path.exists(h5_desc) and not os.path.exists(h5_kpt):
+        if not os.path.exists(h5_desc) and not os.path.exists(h5_kpt) and not os.path.exists(h5_score):
             gen_kpt_f = h5py.File(h5_kpt, 'w')
             gen_desc_f = h5py.File(h5_desc, 'w')
+            gen_score_f = h5py.File(h5_score, 'w')
         else:
             gen_kpt_f = h5py.File(h5_kpt, 'a')
             gen_desc_f = h5py.File(h5_desc, 'a')
+            gen_score_f = h5py.File(h5_score, 'a')
 
         if basename not in gen_kpt_f and basename not in gen_desc_f:
-            aug_feat = data['dump_data'][0]
-            kpt_xy = data['dump_data'][1]
-            _ = gen_kpt_f.create_dataset(basename, data=kpt_xy)
-            _ = gen_desc_f.create_dataset(basename, data=aug_feat)
+            feat = data['dump_data'][0]
+            kpt = data['dump_data'][1]
+            score = data['dump_data'][2]
+            _ = gen_kpt_f.create_dataset(basename, data=kpt)
+            _ = gen_desc_f.create_dataset(basename, data=feat)
+            _ = gen_score_f.create_dataset(basename, data=score)
