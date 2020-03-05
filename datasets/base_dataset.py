@@ -72,7 +72,10 @@ class BaseDataset(metaclass=ABCMeta):
     def _get_data(self, files):
         def _read_image(img_path):
             channels = 1 if self.read_gray else 3
-            img = tf.image.decode_image(tf.io.read_file(img_path), channels=channels)
+            if 'all_jpeg' in self.config and self.config['all_jpeg']:
+                img = tf.image.decode_jpeg(tf.io.read_file(img_path), channels=channels, dct_method='INTEGER_ACCURATE')
+            else:
+                img = tf.image.decode_image(tf.io.read_file(img_path), channels=channels)
             img.set_shape((None, None, channels))
             return tf.cast(img, tf.float32)
 

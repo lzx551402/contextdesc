@@ -45,7 +45,11 @@ class SiftWrapper(object):
     def create(self):
         """Create OpenCV SIFT detector."""
         self.sift = cv2.xfeatures2d.SIFT_create(
-            self.n_feature, self.n_octave_layers, self.peak_thld, self.edge_thld, self.sigma)
+            0,
+            self.n_octave_layers, 
+            self.peak_thld, 
+            self.edge_thld, 
+            self.sigma)
 
     def detect(self, gray_img):
         """Detect keypoints in the gray-scale image.
@@ -57,14 +61,20 @@ class SiftWrapper(object):
         """
 
         cv_kpts = self.sift.detect(gray_img, None)
+        response = np.array([kp.response for kp in cv_kpts])
+        resp_sort = np.argsort(response)[::-1][0:self.n_feature].tolist()
+        cv_kpts = [cv_kpts[i] for i in resp_sort]
         if self.n_feature > 0 and len(cv_kpts) > self.n_feature:
             cv_kpts = cv_kpts[0:self.n_feature]
 
-        all_octaves = [np.int8(i.octave & 0xFF) for i in cv_kpts]
-        self.first_octave = int(np.min(all_octaves))
-        self.max_octave = int(np.max(all_octaves))
+        if len(cv_kpts) > 0:
+            all_octaves = [np.int8(i.octave & 0xFF) for i in cv_kpts]
+            self.first_octave = int(np.min(all_octaves))
+            self.max_octave = int(np.max(all_octaves))
 
-        npy_kpts, cv_kpts = self.sample_by_octave(cv_kpts, self.n_sample, self.down_octave)
+            npy_kpts, cv_kpts = self.sample_by_octave(cv_kpts, self.n_sample, self.down_octave)
+        else:
+            npy_kpts = np.zeros((0, 0))
         return npy_kpts, cv_kpts
 
     def compute(self, img, cv_kpts):

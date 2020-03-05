@@ -38,7 +38,7 @@ class BaseModel(metaclass=ABCMeta):
     """Base model class."""
 
     @abstractmethod
-    def _run(self, data):
+    def _run(self, data, **kwargs):
         raise NotImplementedError
 
     @abstractmethod
@@ -49,9 +49,9 @@ class BaseModel(metaclass=ABCMeta):
     def _construct_network(self):
         raise NotImplementedError
 
-    def run_test_data(self, data):
+    def run_test_data(self, data, **kwargs):
         """"""
-        out_data = self._run(data)
+        out_data = self._run(data, **kwargs)
         return out_data
 
     def __init__(self, model_path, **config):

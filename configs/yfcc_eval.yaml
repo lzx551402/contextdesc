@@ -22,7 +22,7 @@ loc_feat:
   peak_thld: 0.0067
   max_dim: 1280
   upright: true
-  scale_diff: false
+  scale_diff: true
 
 aug_feat:
   infer: true 

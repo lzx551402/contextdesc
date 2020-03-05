@@ -2,7 +2,10 @@ import sys
 from queue import Queue
 from threading import Thread
 
+import os
+from struct import unpack
 import numpy as np
+import cv2
 import tensorflow as tf
 
 from .base_model import BaseModel
@@ -19,19 +22,21 @@ class LocModel(BaseModel):
     output_tensors = ["conv6_feat:0", "kpt_mb:0"]
     default_config = {'n_feature': 0, "n_sample": 0,
                       'batch_size': 512, 'sift_wrapper': None, 'upright': False, 'scale_diff': False,
-                      'dense_desc': False, 'sift_desc': False, 'peak_thld': 0.0067, 'max_dim': 1280}
+                      'dense_desc': False, 'sift_desc': False, 'peak_thld': 0.0067, 'edge_thld': 10, 'max_dim': 1280}
 
     def _init_model(self):
         self.sift_wrapper = SiftWrapper(
             n_feature=self.config['n_feature'],
             n_sample=self.config['n_sample'],
-            peak_thld=self.config['peak_thld'])
+            peak_thld=self.config['peak_thld'],
+            edge_thld=self.config['edge_thld']
+            )
         self.sift_wrapper.standardize = False  # the network has handled this step.
         self.sift_wrapper.ori_off = self.config['upright']
         self.sift_wrapper.pyr_off = not self.config['scale_diff']
         self.sift_wrapper.create()
 
-    def _run(self, data):
+    def _run(self, data, **kwargs):
         def _worker(patch_queue, sess, loc_feat, kpt_mb):
             """The worker thread."""
             while True:
@@ -43,7 +48,6 @@ class LocModel(BaseModel):
                 loc_feat.append(loc_returns[0])
                 kpt_mb.append(loc_returns[1])
                 patch_queue.task_done()
-        assert data.shape[-1] == 1
         gray_img = np.squeeze(data, axis=-1).astype(np.uint8)
         # detect SIFT keypoints.
         npy_kpts, cv_kpts = self.sift_wrapper.detect(gray_img)
@@ -150,7 +154,7 @@ class LocModel(BaseModel):
         conv6_feat = tower.get_output_by_name('conv6')
         conv6_feat = tf.squeeze(conv6_feat, axis=[1, 2], name='conv6_feat')
 
-        with tf.variable_scope('kpt_m'):
+        with tf.compat.v1.variable_scope('kpt_m'):
             inter_feat = tower.get_output_by_name('conv5')
             matchability_tower = MatchabilityPrediction(
                 {'data': inter_feat}, is_training=False, reuse=False)
