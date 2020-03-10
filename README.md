@@ -74,7 +74,7 @@ The matching results from SIFT features (top), raw local features (middle) and a
 
 First, download [HPSequences](http://icvl.ee.ic.ac.uk/vbalnt/hpatches/hpatches-sequences-release.tar.gz) (full image sequences of [HPatches](https://github.com/hpatches/hpatches-dataset) [[3]](#refs) and their corresponding homographies).
 
-Second, download our CVPR intermediate results of keypoint locations and image patches for HPSequences ([Link](https://drive.google.com/file/d/1BeZUYDvPqluud04B2h3HayLZGywoey8n/view?usp=sharing)).
+Second, download our CVPR intermediate results of keypoint locations and image patches for HPSequences ([Link](https://research.altizure.com/data/contextdesc_models/hseq_cvpr.tar)).
 
 Unzip the above two downloads in the same folder, and you will find each .ppm image aside with a .pkl file.
 
