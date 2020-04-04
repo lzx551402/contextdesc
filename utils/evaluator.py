@@ -36,7 +36,7 @@ class Evaluator(object):
             matches = tf.stack([ids1, nn12])
         return matches
 
-    def bf_matcher(self, sess, descriptors_a, descriptors_b):
+    def mnn_matcher(self, sess, descriptors_a, descriptors_b):
         input_dict = {
             "descriptor_a:0": descriptors_a,
             "descriptor_b:0": descriptors_b
@@ -45,7 +45,7 @@ class Evaluator(object):
         return matches.T
 
     def feature_matcher(self, sess, ref_feat, test_feat):
-        matches = self.bf_matcher(sess, ref_feat, test_feat)
+        matches = self.mnn_matcher(sess, ref_feat, test_feat)
         matches = [cv2.DMatch(matches[i][0], matches[i][1], 0) for i in range(matches.shape[0])]
         return matches
 

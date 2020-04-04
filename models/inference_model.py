@@ -49,13 +49,11 @@ def inference(config):
     if config['aug']:
         img_feat = tf.compat.v1.placeholder(
             tf.float32, shape=(1, None, None, config['reg_feat_dim']), name='ph_img_feat')
-        grid_pts = tf.compat.v1.placeholder(
-            tf.float32, shape=(1, None, None, 2), name='ph_grid_pts')
 
         with tf.compat.v1.variable_scope('vis_context'):
             pt_tower = VisualContext(
-                {'grid_pts': grid_pts, 'img_feat': img_feat,
-                 'local_feat': feat, 'kpt_param': kpt_xy}, is_training=False, reuse=False)
+                {'img_feat': img_feat, 'local_feat': feat, 'kpt_param': kpt_xy}, 
+                is_training=False, reuse=False)
         photo_feat = pt_tower.get_output()
         aug_feat.append(photo_feat)
 

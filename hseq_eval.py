@@ -28,17 +28,16 @@ FLAGS = tf.app.flags.FLAGS
 tf.app.flags.DEFINE_string('config', None, """Path to the configuration file.""")
 
 
-def loader(hseq_utils, ori_est, dense_desc, producer_queue):
+def loader(hseq_utils, dense_desc, producer_queue):
     for seq_idx in range(hseq_utils.seq_num):
-        seq_name, hseq_data = hseq_utils.get_data(seq_idx, ori_est, dense_desc)
+        seq_name, hseq_data = hseq_utils.get_data(seq_idx, dense_desc)
 
         for i in range(6):
             gt_homo = [seq_idx, seq_name] if i == 0 else hseq_data.homo[i]
             producer_queue.put([hseq_data.img[i],
                                 hseq_data.kpt_param[i],
                                 hseq_data.patch[i],
-                                hseq_data.img_feat[i][0],
-                                hseq_data.img_feat[i][1],
+                                hseq_data.img_feat[i],
                                 hseq_data.coord[i],
                                 gt_homo])
     producer_queue.put(None)
@@ -50,7 +49,7 @@ def extractor(patch_queue, sess, output_tensors, config, consumer_queue):
         if queue_data is None:
             consumer_queue.put(None)
             return
-        img, kpt_param, patch, img_feat, grid_pts, coord, gt_homo = queue_data
+        img, kpt_param, patch, img_feat, coord, gt_homo = queue_data
         if config['dense_desc']:
             gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
             input_dict = {'ph_img:0': np.reshape(gray, (1, gray.shape[0], gray.shape[1], 1))}
@@ -59,7 +58,6 @@ def extractor(patch_queue, sess, output_tensors, config, consumer_queue):
         if config['aug'] or config['dense_desc']:
             input_dict['ph_kpt_param:0'] = np.expand_dims(kpt_param, axis=0)
             input_dict['ph_img_feat:0'] = np.expand_dims(img_feat, axis=0)
-            input_dict['ph_grid_pts:0'] = np.expand_dims(grid_pts, axis=0)
 
         output_arrays = sess.run(output_tensors, input_dict)
         local_feat = output_arrays['local_feat']
@@ -146,7 +144,7 @@ def hseq_eval():
         consumer_queue = Queue()
 
         producer0 = Thread(target=loader, args=(
-            hseq_utils, test_config['network']['ori_est'], test_config['network']['dense_desc'], producer_queue))
+            hseq_utils, test_config['network']['dense_desc'], producer_queue))
         producer0.daemon = True
         producer0.start()
 

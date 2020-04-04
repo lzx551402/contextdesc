@@ -43,20 +43,9 @@ class AugModel(BaseModel):
 
         aug_feat = [ph_local_feat]
 
-        bs = tf.shape(ph_regional_feat)[0]
-        rows = tf.shape(ph_regional_feat)[1]
-        cols = tf.shape(ph_regional_feat)[2]
-        x_rng = tf.linspace(-1., 1., cols)
-        y_rng = tf.linspace(-1., 1., rows)
-        xv, yv = tf.meshgrid(x_rng, y_rng)
-        grid_pts = tf.stack((xv, yv), axis=-1)
-        grid_pts = tf.expand_dims(grid_pts, axis=0)
-        grid_pts = tf.tile(grid_pts, (bs, 1, 1, 1))
-
         with tf.variable_scope('vis_context'):
             pt_tower = VisualContext(
-                {'grid_pts': grid_pts, 'img_feat': ph_regional_feat,
-                 'local_feat': ph_local_feat, 'kpt_param': ph_kpt_xy},
+                {'img_feat': ph_regional_feat, 'local_feat': ph_local_feat, 'kpt_param': ph_kpt_xy},
                 is_training=False, reuse=False)
             vis_feat = pt_tower.get_output()
             aug_feat.append(vis_feat)

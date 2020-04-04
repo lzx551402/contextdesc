@@ -41,14 +41,18 @@ class VisualContext(Network):
         return new_points
 
     def setup(self):
-        grid_pts = self.inputs['grid_pts']
         local_feat = self.inputs['local_feat']
         vis_context_feat = self.inputs['img_feat']
         kpt_param = self.inputs['kpt_param']
-
+        # config.
         batch_size = tf.shape(vis_context_feat)[0]
         img_feat_dim = vis_context_feat.get_shape()[-1].value
-        out_vis_context = None
+        # generate grid pts.
+        x_rng = tf.linspace(-1., 1., tf.shape(vis_context_feat)[2])
+        y_rng = tf.linspace(-1., 1., tf.shape(vis_context_feat)[1])
+        xv, yv = tf.meshgrid(x_rng, y_rng)
+        grid_pts = tf.tile(tf.expand_dims(tf.stack((xv, yv), -1), 0), (batch_size, 1, 1, 1))
+        grid_pts = tf.reshape(grid_pts, (batch_size, -1, 2))
 
         (self.feed('img_feat')
          .reshape((batch_size, -1, 1, img_feat_dim))
@@ -120,5 +124,85 @@ class LightContextNormalization(Network):
 
         (self.feed('res3', 'cn4_conv1')
          .add(name='res4')
+         .conv(1, 128, 1, relu=False, name='context_trans')
+         .squeeze(axis=2, name='context_feat'))
+
+
+class DiffPoolContextNormalization(Network):
+    """Context normalization definition."""
+
+    def setup(self):
+        share = False
+        spatial = False
+
+        (self.feed('points')
+         .conv(1, 128, 1, relu=False, name='dim_control')
+         .context_normalization(name='cn1_cn1')
+         .batch_normalization(relu=True, name='cn1_bn1')
+         .conv(1, 128, 1, relu=False, name='cn1_conv1'))
+
+        (self.feed('dim_control', 'cn1_conv1')
+         .add(name='res1'))
+
+        diffpool1, weight_mat1 = self.diffpool_cn(self.layers['res1'], 512, name='diffpool1')
+        self.layers['diffpool1'] = diffpool1
+        self.layers['weight_mat1'] = weight_mat1
+
+        (self.feed('diffpool1')
+         .context_normalization(name='cn2_cn1')
+         .batch_normalization(relu=True, name='cn2_bn1')
+         .conv(1, 128, 1, relu=False, name='cn2_conv1'))
+
+        (self.feed('diffpool1', 'cn2_conv1')
+         .add(name='res2'))
+
+        diffpool2, weight_mat2 = self.diffpool_cn(self.layers['res2'], 256, name='diffpool2')
+        self.layers['diffpool2'] = diffpool2
+        self.layers['weight_mat2'] = weight_mat2
+
+        (self.feed('diffpool2')
+         .context_normalization(name='cn3_cn1')
+         .batch_normalization(relu=True, name='cn3_bn1')
+         .conv(1, 128, 1, relu=False, name='cn3_conv1'))
+
+        if spatial:
+            cn3_conv = self.layers['cn3_conv1']
+            cn3_conv = tf.transpose(cn3_conv, [0, 3, 2, 1])
+            cn_spatial = self.batch_normalization(cn3_conv, relu=True, name='cn3_spatial_bn')
+            cn_spatial = self.conv(cn_spatial, 1, 256, 1, relu=False, name='cn_spatial')
+            cn_spatial = tf.transpose(cn_spatial, [0, 3, 2, 1])
+            self.layers['cn3_conv1'] = cn_spatial + self.layers['cn3_conv1']
+
+        (self.feed('cn3_conv1')
+         .context_normalization(name='cn3_cn2')
+         .batch_normalization(relu=True, name='cn3_bn2')
+         .conv(1, 128, 1, relu=False, name='cn3_conv2'))
+
+        (self.feed('diffpool2', 'cn3_conv2')
+         .add(name='res3'))
+
+        (self.feed('res3', 'res2', 'weight_mat2')
+         .diffunpool_cn(share=share, name='diffunpool1'))
+
+        (self.feed('diffunpool1', 'res2')
+         .concat(-1, name='diffunpool1')
+         .conv_bn(1, 128, 1, relu=False, name='diffunpool1'))
+
+        (self.feed('diffunpool1')
+         .context_normalization(name='cn4_cn1')
+         .batch_normalization(relu=True, name='cn4_bn1')
+         .conv(1, 128, 1, relu=False, name='cn4_conv1'))
+
+        (self.feed('diffunpool1', 'cn4_conv1')
+         .add(name='res4'))
+
+        (self.feed('res4', 'res1', 'weight_mat1')
+         .diffunpool_cn(share=share, name='diffunpool2'))
+
+        (self.feed('diffunpool2', 'res1')
+         .concat(-1, name='diffunpool2')
+         .conv_bn(1, 128, 1, relu=False, name='diffunpool2'))
+
+        (self.feed('diffunpool2')
          .conv(1, 128, 1, relu=False, name='context_trans')
          .squeeze(axis=2, name='context_feat'))

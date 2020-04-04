@@ -48,7 +48,7 @@ class HSeqUtils(object):
         self.sample_num = config['kpt_n']
         self.patch_scale = 6
 
-    def get_data(self, seq_idx, ori_est, dense_desc):
+    def get_data(self, seq_idx, dense_desc):
         random.seed(0)
         if self.suffix is None:
             sift_wrapper = SiftWrapper(n_feature=self.sample_num, peak_thld=0.04)
@@ -61,12 +61,6 @@ class HSeqUtils(object):
         for img_idx in range(1, 7):
             # read image features.
             img_feat = np.load(os.path.join(seq_name, '%d_img_feat.npy' % img_idx))
-            rows = img_feat.shape[0]
-            cols = img_feat.shape[1]
-            x_rng = np.linspace(-1., 1., cols)
-            y_rng = np.linspace(-1., 1., rows)
-            xv, yv = np.meshgrid(x_rng, y_rng)
-            grid_pts = np.stack((xv, yv), axis=-1)
             # read images.
             img = cv2.imread(os.path.join(seq_name, '%d.ppm' % img_idx))
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -89,28 +83,11 @@ class HSeqUtils(object):
                     patches = None
 
             kpt_num = npy_kpts.shape[0]
-
-            # Sample keypoints
-            if self.sample_num > 0 and kpt_num > self.sample_num:
-                sample_idx = random.sample(range(kpt_num), self.sample_num)
-            else:
-                sample_idx = range(kpt_num)
-            # Apply sampling.
-            npy_kpts = npy_kpts[sample_idx]
-            if patches is not None:
-                patches = patches[sample_idx]
-            kpt_num = npy_kpts.shape[0]
-
             # compose affine crop matrix.
             crop_mat = np.zeros((kpt_num, 6))
-            if ori_est:
-                # no initial orientation.
-                m_cos = np.ones_like(npy_kpts[:, 2]) * self.patch_scale * npy_kpts[:, 2]
-                m_sin = np.zeros_like(npy_kpts[:, 2]) * self.patch_scale * npy_kpts[:, 2]
-            else:
-                # rely on the SIFT orientation estimation.
-                m_cos = np.cos(-npy_kpts[:, 3]) * self.patch_scale * npy_kpts[:, 2]
-                m_sin = np.sin(-npy_kpts[:, 3]) * self.patch_scale * npy_kpts[:, 2]
+            # rely on the SIFT orientation estimation.
+            m_cos = np.cos(-npy_kpts[:, 3]) * self.patch_scale * npy_kpts[:, 2]
+            m_sin = np.sin(-npy_kpts[:, 3]) * self.patch_scale * npy_kpts[:, 2]
             crop_mat[:, 0] = m_cos / float(img_size[1])
             crop_mat[:, 1] = m_sin / float(img_size[1])
             crop_mat[:, 2] = (npy_kpts[:, 0] - img_size[1] / 2.) / (img_size[1] / 2.)
@@ -132,6 +109,6 @@ class HSeqUtils(object):
             hseq_data.patch.append(patches)
             hseq_data.coord.append(npy_kpts)
             hseq_data.homo.append(homo_mat)
-            hseq_data.img_feat.append((img_feat, grid_pts))
+            hseq_data.img_feat.append(img_feat)
 
         return seq_name, hseq_data
