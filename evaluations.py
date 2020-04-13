@@ -134,7 +134,7 @@ def main(argv=None):  # pylint: disable=unused-argument
     """Program entrance."""
     with open(FLAGS.config, 'r') as f:
         config = yaml.load(f)
-    if not os.path.exists(config['dump_root']):
+    if config['dump_root'] is not None and not os.path.exists(config['dump_root']):
         os.mkdir(config['dump_root'])
     # extract regional features.
     if config['reg_feat']['infer']:
@@ -151,4 +151,4 @@ def main(argv=None):  # pylint: disable=unused-argument
 
 if __name__ == '__main__':
     tf.flags.mark_flags_as_required(['config'])
-    tf.app.run()
+    tf.compat.v1.app.run()

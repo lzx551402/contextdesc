@@ -15,6 +15,11 @@ This paper focuses on augmenting off-the-shelf local feature descriptors with tw
 }
 ```
 
+## Update 4/13/2020
+
+The training code is released in a separate project, [TFMatch](https://github.com/lzx551402/tfmatch), which also contains two related works ([GeoDesc](https://github.com/lzx551402/geodesc), CVPR'19 and [ASLFeat](https://github.com/lzx551402/ASLFeat), CVPR'20).
+
+
 ## Requirements
 
 Please use Python 3.6, install NumPy, OpenCV (3.4.2), OpenCV-Contrib (3.4.2) and TensorFlow (1.14.0). Refer to [requirements.txt](requirements.txt) for some other dependencies.

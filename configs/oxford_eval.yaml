@@ -1,0 +1,36 @@
+data_name: 'oxford'
+data_split: ['images', 'query_images']
+data_root: '/local/Oxford5k'
+dump_root: '/local/Oxford5k/contextdesc'
+truncate: [0, null]
+
+pretrained:
+  loc_model: 'pretrained/contextdesc++/model.ckpt-400000'
+  reg_model: 'pretrained/retrieval_model/model.ckpt-550000'
+
+reg_feat:
+  infer: true
+  overwrite: false
+  max_dim: 1024
+
+loc_feat:
+  infer: true
+  overwrite: false
+  n_feature: 10000
+  batch_size: 512
+  dense_desc: false
+  peak_thld: 0.0067
+  edge_thld: 10
+  max_dim: 1280
+  upright: true
+  scale_diff: true
+
+aug_feat:
+  infer: true
+  overwrite: false
+  reg_feat_dim: 2048
+  quantz: true
+
+post_format:
+  enable: true
+  suffix: ''

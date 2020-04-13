@@ -8,6 +8,7 @@ from .cnn_wrapper.resnet import ResNet50
 
 class RegModel(BaseModel):
     output_tensors = "res5c:0"
+    # output_tensors = "attonly/attention/merge/softplus_attention/Mul:0"
     default_config = {'max_dim': 1024}
 
     def _init_model(self):
@@ -26,6 +27,6 @@ class RegModel(BaseModel):
 
     def _construct_network(self):
         mean = [124., 117., 104.]
-        ph_img = tf.placeholder(dtype=tf.float32, shape=(None, None, None, 3), name='input')
+        ph_img = tf.compat.v1.placeholder(dtype=tf.float32, shape=(None, None, None, 3), name='input')
         ph_img = tf.subtract(ph_img, mean)
         net = ResNet50({'data': ph_img}, is_training=False, reuse=False, fcn=True)
