@@ -22,7 +22,7 @@ The training code is released in a separate project, [TFMatch](https://github.co
 
 ## Requirements
 
-Please use Python 3.6, install NumPy, OpenCV (3.4.2), OpenCV-Contrib (3.4.2) and TensorFlow (1.14.0). Refer to [requirements.txt](requirements.txt) for some other dependencies.
+Please use Python 3.6, install NumPy, OpenCV (3.4.2), OpenCV-Contrib (3.4.2) and TensorFlow (1.15.2). Refer to [requirements.txt](requirements.txt) for some other dependencies.
 
 ## Pre-trained model
 
