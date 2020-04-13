@@ -1,0 +1,3 @@
+Instead of extracting patch descriptions, Dense-ContextDesc consumes image inputs, densely extracts feature representation, and uses [Spatial Transformer Networks](https://github.com/kevinzakka/spatial-transformer-network) to crop a set of "feature patches" around the keypoint.
+
+For example, using the scale and orientation parameters obtained from SIFT detector, we compose an affine transformation matrix, then crop a "feature patch" sized 8x8x128 around each keypoint location. The "feature patch" is then mapped to a 1x1x128 descriptor via a convolution with 8x8 filter. This process is similar to [LF-Net](https://github.com/vcg-uvic/lf-net-release), with scale and orientation pre-given.

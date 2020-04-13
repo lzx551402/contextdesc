@@ -19,6 +19,14 @@ This paper focuses on augmenting off-the-shelf local feature descriptors with tw
 
 The training code is released in a separate project, [TFMatch](https://github.com/lzx551402/tfmatch), which also contains two related works ([GeoDesc](https://github.com/lzx551402/geodesc), CVPR'19 and [ASLFeat](https://github.com/lzx551402/ASLFeat), CVPR'20).
 
+We release ContextDesc++_upright, which is trained with patch orientation fixed during training, i.e., without rotation perturbation. Such a model performs notably better when test images exhibit less rotation changes, or when keypoint orientation is used to normalize the input patches.
+
+The effect of above modifications is summarized below. ``Recall`` on HPatches is reported.
+
+| Settings       | ContextDesc++ | ContextDesc++_upright |
+|----------------|---------------|-----------------------|
+| upright: false |    74.54      |       72.20           |
+| upright: true  |    77.16      |       78.76           |
 
 ## Requirements
 
@@ -40,16 +48,18 @@ Several variants of ContextDesc as in the paper are provided for study.
 | Name            | Downloads                                                                         | Descriptions                                                                                                                                                                                                                                                               |
 |-----------------|-----------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Retrieval model | [Link](https://research.altizure.com/data/contextdesc_models/retrieval_model.tar) | (Regional feature) An image retrieval model trained on [Google-Landmarks Dataset](https://www.kaggle.com/google/google-landmarks-dataset) that provides high-level image representation to enrich visual context. More details can be found in the supplementary material. |
+| DELF Retrieval model | [Link](https://research.altizure.com/data/contextdesc_models/retrieval_delf_model.tar) | (Regional feature) [DELF](https://github.com/tensorflow/models/tree/master/research/delf) retrieval model for general purposes. |
 | ContextDesc| [Link](https://research.altizure.com/data/contextdesc_models/contextdesc.tar)     | (Base) Use [GeoDesc](https://github.com/lzx551402/geodesc) [[1]](#refs) (ECCV'18) as the local feature model, and train only the augmentation model.                                                                                                                       |
 | ContextDesc+    | [Link](https://research.altizure.com/data/contextdesc_models/contextdesc_p.tar)    | (Better) Train the local feature model and augmentation model separately with the proposed scale-aware N-pair loss.                                                                                                                                                        |
 | ContextDesc++   | [Link](https://research.altizure.com/data/contextdesc_models/contextdesc_pp.tar)   | (Best) End-to-end train both the local feature and augmentation models.                                                                                                                                                                                                    |
-| Dense-ContextDesc| [Link](https://research.altizure.com/data/contextdesc_models/dense-contextdesc.tar)   | Densely extract features from the entire input image (instead of image patch). Details can be found [here](docs/dense_model.md).|
+| ContextDesc++_upright   | [Link](https://research.altizure.com/data/contextdesc_models/contextdesc_pp_upright.tar)   | (Post-CVPR update) End-to-end train both the local feature and augmentation models, with the patch orientation fixed (i.e., no perturbation and aligned to SIFT orientation) during training.                                                                                                                                                                                                    |
+| Dense-ContextDesc| [Link](https://research.altizure.com/data/contextdesc_models/dense-contextdesc.tar)   | (Post-CVPR update) Densely extract features from the entire input image (instead of image patch). Details can be found [here](docs/dense_model.md).|
 
 The TensorFlow network definition can be found [here](models/cnn_wrapper). An usage is provided along with the [image matching example](image_matching.py).
 
 # Training data
 
-Part of the training data is released in [GL3D](https://github.com/lzx551402/GL3D). Please also cite [MIRorR](https://github.com/hlzz/mirror) [[2]](#refs) if you find this dataset useful for your research.
+Training data is released in [GL3D](https://github.com/lzx551402/GL3D), and training code is available in [TFMatch](https://github.com/lzx551402/tfmatch).
 
 ## Example scripts
 

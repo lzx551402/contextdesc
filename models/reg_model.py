@@ -8,7 +8,6 @@ from .cnn_wrapper.resnet import ResNet50
 
 class RegModel(BaseModel):
     output_tensors = "res5c:0"
-    # output_tensors = "attonly/attention/merge/softplus_attention/Mul:0"
     default_config = {'max_dim': 1024}
 
     def _init_model(self):

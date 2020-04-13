@@ -1,38 +1,37 @@
-data_name: 'imw2020'
-data_split: 'val'
-data_root: '/local/data/phototourism'
-dump_root: '/local/imw2020_val_contextdesc_8k_dump'
-submission_root: '/local/imw2020_val_contextdesc_8k'
+data_name: 'eth'
+data_split: ['Gendarmenmarkt', 'Madrid_Metropolis', 'Tower_of_London']
+data_root: '/local/local-feature-evaluation/datasets'
+dump_root: '/local/dump_eth_contextdesc_eth'
+submission_root: '/local/local-feature-evaluation/datasets'
 truncate: [0, null]
-all_jpeg: true
 
 pretrained:
   loc_model: 'pretrained/contextdesc++/model.ckpt-400000'
   reg_model: 'pretrained/retrieval_model/model.ckpt-550000'
 
 reg_feat:
-  infer: true
+  infer: false
   overwrite: false
+  delf: false
   max_dim: 1024
 
 loc_feat:
   infer: true
   overwrite: false
-  n_feature: 8000
+  n_feature: 20000
   batch_size: 512
   dense_desc: false
-  peak_thld: -10000
-  edge_thld: -10000
+  peak_thld: 0.0067
   max_dim: 1280
   upright: true
-  scale_diff: true
+  scale_diff: false
 
 aug_feat:
   infer: true
-  overwrite: false
   reg_feat_dim: 2048
+  overwrite: false
   quantz: false
 
 post_format:
   enable: true
-  suffix: ''
+  suffix: '_contextdesc_eth'
