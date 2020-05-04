@@ -62,6 +62,13 @@ class SiftWrapper(object):
 
         cv_kpts = self.sift.detect(gray_img, None)
 
+        if self.ori_off:
+            tmp_npy_kpts = [np.array([tmp_cv_kpt.pt[0], tmp_cv_kpt.pt[1], tmp_cv_kpt.size])
+                for i, tmp_cv_kpt in enumerate(cv_kpts)]
+            tmp_npy_kpts = np.stack(tmp_npy_kpts, axis=0)
+            _, unique = np.unique(tmp_npy_kpts, axis=0, return_index=True)
+            cv_kpts = [cv_kpts[i] for i in unique]
+
         if self.n_feature > 0 and len(cv_kpts) > self.n_feature:
             response = np.array([kp.response for kp in cv_kpts])
             resp_sort = np.argsort(response)[::-1][0:self.n_feature].tolist()
