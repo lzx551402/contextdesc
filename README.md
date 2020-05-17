@@ -68,7 +68,8 @@ Training data is released in [GL3D](https://github.com/lzx551402/GL3D), and trai
 To get started, clone the repo and download the pretrained model (take `ContextDesc++` as an example):
 ```bash
 git clone https://github.com/lzx551402/contextdesc.git && \
-cd /local/contextdesc/pretrained && \
+mkdir ./contextdesc/pretrained && \
+cd ./contextdesc/pretrained && \
 wget https://research.altizure.com/data/contextdesc_models/contextdesc_pp.tar && \
 tar -xvf contextdesc_pp.tar
 ```
@@ -76,7 +77,7 @@ tar -xvf contextdesc_pp.tar
 then simply call:
 
 ```bash
-cd /local/contextdesc && python image_matching.py
+cd ../contextdesc && python image_matching.py
 ```
 
 The matching results from SIFT features (top), raw local features (middle) and augmented features (bottom) will be displayed. 
@@ -116,7 +117,7 @@ Next, configure the data paths (`data_root`, `dump_root` and `submission_root`) 
 Then call the evaluation script by:
 
 ```bash
-cd /local/contextdesc && python evaluations.py --config configs/imw2019_eval.yaml
+cd path/to/contextdesc && python evaluations.py --config configs/imw2019_eval.yaml
 ```
 
 You may then compress and submit the results to the challenge website. 
