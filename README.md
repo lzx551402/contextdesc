@@ -47,13 +47,13 @@ Several variants of ContextDesc as in the paper are provided for study.
 
 | Name            | Downloads                                                                         | Descriptions                                                                                                                                                                                                                                                               |
 |-----------------|-----------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Retrieval model | [Link](https://research.altizure.com/data/contextdesc_models/retrieval_model.tar) | (Regional feature) An image retrieval model trained on [Google-Landmarks Dataset](https://www.kaggle.com/google/google-landmarks-dataset) that provides high-level image representation to enrich visual context. More details can be found in the supplementary material. |
-| DELF Retrieval model | [Link](https://research.altizure.com/data/contextdesc_models/retrieval_delf_model.tar) | (Regional feature) [DELF](https://github.com/tensorflow/models/tree/master/research/delf) retrieval model for general purposes. |
-| ContextDesc| [Link](https://research.altizure.com/data/contextdesc_models/contextdesc.tar)     | (Base) Use [GeoDesc](https://github.com/lzx551402/geodesc) [[1]](#refs) (ECCV'18) as the local feature model, and train only the augmentation model.                                                                                                                       |
-| ContextDesc+    | [Link](https://research.altizure.com/data/contextdesc_models/contextdesc_p.tar)    | (Better) Train the local feature model and augmentation model separately with the proposed scale-aware N-pair loss.                                                                                                                                                        |
-| ContextDesc++   | [Link](https://research.altizure.com/data/contextdesc_models/contextdesc_pp.tar)   | (Best) End-to-end train both the local feature and augmentation models.                                                                                                                                                                                                    |
-| ContextDesc++_upright   | [Link](https://research.altizure.com/data/contextdesc_models/contextdesc_pp_upright.tar)   | (Post-CVPR update) End-to-end train both the local feature and augmentation models, with the patch orientation fixed (i.e., no perturbation and aligned to SIFT orientation) during training.                                                                                                                                                                                                    |
-| Dense-ContextDesc| [Link](https://research.altizure.com/data/contextdesc_models/dense-contextdesc.tar)   | (Post-CVPR update) Densely extract features from the entire input image (instead of image patch). Details can be found [here](docs/dense_model.md).|
+| Retrieval model | [Link](https://1drv.ms/u/s!Anl8gFgW1C7LknXMylr9bnoXQVlE?e=lHWQor) | (Regional feature) An image retrieval model trained on [Google-Landmarks Dataset](https://www.kaggle.com/google/google-landmarks-dataset) that provides high-level image representation to enrich visual context. More details can be found in the supplementary material. |
+| DELF Retrieval model | [Link](https://1drv.ms/u/s!Anl8gFgW1C7Lkm6zJFiwqavl7d2g?e=fmc3TV) | (Regional feature) [DELF](https://github.com/tensorflow/models/tree/master/research/delf) retrieval model for general purposes. |
+| ContextDesc| [Link](https://1drv.ms/u/s!Anl8gFgW1C7LknSY_WFPd04d9TO-?e=75ABot)     | (Base) Use [GeoDesc](https://github.com/lzx551402/geodesc) [[1]](#refs) (ECCV'18) as the local feature model, and train only the augmentation model.                                                                                                                       |
+| ContextDesc+    | [Link](https://1drv.ms/u/s!Anl8gFgW1C7LknHOpThg7ibyMTrV?e=SWWhsz)    | (Better) Train the local feature model and augmentation model separately with the proposed scale-aware N-pair loss.                                                                                                                                                        |
+| ContextDesc++   | [Link](https://1drv.ms/u/s!Anl8gFgW1C7LknLru_1GITirPEpg?e=20f0nd)   | (Best) End-to-end train both the local feature and augmentation models.                                                                                                                                                                                                    |
+| ContextDesc++_upright   | [Link](https://1drv.ms/u/s!Anl8gFgW1C7Lkm-wuQU2EVdmh7dG?e=Wg1GAL)   | (Post-CVPR update) End-to-end train both the local feature and augmentation models, with the patch orientation fixed (i.e., no perturbation and aligned to SIFT orientation) during training.                                                                                                                                                                                                    |
+| Dense-ContextDesc| [Link](https://1drv.ms/u/s!Anl8gFgW1C7LknDmFX1K51RkN2E8?e=4qzcuS)   | (Post-CVPR update) Densely extract features from the entire input image (instead of image patch). Details can be found [here](docs/dense_model.md).|
 
 The TensorFlow network definition can be found [here](models/cnn_wrapper). An usage is provided along with the [image matching example](image_matching.py).
 
@@ -65,11 +65,10 @@ Training data is released in [GL3D](https://github.com/lzx551402/GL3D), and trai
 
 ### 1. Test image matching
 
-To get started, clone the repo and download the pretrained model (take `ContextDesc++` as an example):
+To get started, clone the repo and download the pretrained model (take `ContextDesc++` as an example) [URL](https://1drv.ms/u/s!Anl8gFgW1C7LknLru_1GITirPEpg?e=20f0nd):
 ```bash
 git clone https://github.com/lzx551402/contextdesc.git && \
 cd /local/contextdesc/pretrained && \
-wget https://research.altizure.com/data/contextdesc_models/contextdesc_pp.tar && \
 tar -xvf contextdesc_pp.tar
 ```
 
@@ -89,7 +88,7 @@ The matching results from SIFT features (top), raw local features (middle) and a
 
 First, download [HPSequences](http://icvl.ee.ic.ac.uk/vbalnt/hpatches/hpatches-sequences-release.tar.gz) (full image sequences of [HPatches](https://github.com/hpatches/hpatches-dataset) [[3]](#refs) and their corresponding homographies).
 
-Second, download our CVPR intermediate results of keypoint locations and image patches for HPSequences ([Link](https://research.altizure.com/data/contextdesc_models/hseq_cvpr.tar)).
+Second, download our CVPR intermediate results of keypoint locations and image patches for HPSequences ([Link](https://research.altizure.com/data/contextdesc_models/hseq_cvpr.tar)) (broken link, may need to regenerate the input). 
 
 Unzip the above two downloads in the same folder, and you will find each .ppm image aside with a .pkl file.
 
